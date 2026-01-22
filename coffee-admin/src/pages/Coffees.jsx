@@ -1,20 +1,16 @@
 import { useContext, useState } from 'react';
 import { CoffeeContext } from '../context/CoffeeContext';
+import { PriceContext } from '../context/PriceContext';
 import CoffeeForm from '../components/CoffeeForm';
 import Table from '../components/Table';
 
 const Coffees = () => {
   const { coffees, setCoffees } = useContext(CoffeeContext);
+  const { convert } = useContext(PriceContext);
   const [editCoffee, setEditCoffee] = useState(null);
 
   const deleteCoffee = (id) => {
-    if (
-      !window.confirm(
-        'დარწმუნებული ხარ, რომ გინდა ამ ყავის წაშლა?'
-      )
-    )
-      return;
-
+    if (!window.confirm('დარწმუნებული ხარ?')) return;
     setCoffees(coffees.filter((coffee) => coffee.id !== id));
   };
 
@@ -28,20 +24,17 @@ const Coffees = () => {
       />
 
       <Table
-        headers={['Title', 'Total Price', 'Actions']}
+        headers={['Title', 'Price', 'Actions']}
         data={coffees}
         renderRow={(coffee) => (
           <>
             <td>{coffee.title}</td>
-            <td>{coffee.totalPrice} ₾</td>
+            <td>{convert(coffee.totalPrice)}</td>
             <td>
               <button onClick={() => setEditCoffee(coffee)}>
                 ✏️
               </button>
-              <button
-                onClick={() => deleteCoffee(coffee.id)}
-                style={{ marginLeft: '8px' }}
-              >
+              <button onClick={() => deleteCoffee(coffee.id)}>
                 ❌
               </button>
             </td>

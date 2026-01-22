@@ -1,30 +1,45 @@
+import { useContext, useState } from 'react';
+import { CoffeeContext } from '../context/CoffeeContext';
 import IngredientForm from '../components/IngredientForm';
 import Table from '../components/Table';
-import { useContext } from 'react';
-import { CoffeeContext } from '../context/CoffeeContext';
 
 const Ingredients = () => {
-  const { ingredients, setIngredients } = useContext(CoffeeContext);
+  const { ingredients, setIngredients } =
+    useContext(CoffeeContext);
+
+  const [editIngredient, setEditIngredient] = useState(null);
+
+  const deleteIngredient = (id) => {
+    if (!window.confirm('Delete ingredient?')) return;
+    setIngredients(
+      ingredients.filter((ing) => ing.id !== id)
+    );
+  };
 
   return (
     <>
       <h2>Ingredients</h2>
-      <IngredientForm />
+
+      <IngredientForm
+        editIngredient={editIngredient}
+        setEditIngredient={setEditIngredient}
+      />
 
       <Table
-        headers={['Name', 'Price', 'Delete']}
+        headers={['Name', 'Price', 'Actions']}
         data={ingredients}
-        renderRow={(item) => (
+        renderRow={(ing) => (
           <>
-            <td>{item.name}</td>
-            <td>{item.price} ₾</td>
+            <td>{ing.name}</td>
+            <td>{ing.price} ₾</td>
             <td>
+              <button onClick={() => setEditIngredient(ing)}>
+                ✏️
+              </button>
               <button
-                onClick={() =>
-                  setIngredients(ingredients.filter((i) => i.id !== item.id))
-                }
+                onClick={() => deleteIngredient(ing.id)}
               >
-                X
+                ❌
               </button>
             </td>
           </>
@@ -35,3 +50,4 @@ const Ingredients = () => {
 };
 
 export default Ingredients;
+
